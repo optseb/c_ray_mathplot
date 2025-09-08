@@ -23,12 +23,12 @@ extern MulticamScene* scene;
 // When the program starts, how many samples per ommatidium/element do you want?
 constexpr int samples_per_omm_default = 64;
 
-namespace eye3d
+namespace demo
 {
     // Your application-specific help message
     void printHelp()
     {
-        std::cout << "USAGE:\neye3d -f <path to gltf scene>" << std::endl << std::endl;
+        std::cout << "USAGE:\nc_ray_mathplot -f <path to gltf scene>" << std::endl << std::endl;
         std::cout << "\t-h\tDisplay this help information." << std::endl;
         std::cout << "\t-f\tPath to a gltf scene file (absolute or relative to current "
                   << "working directory, e.g. './data/axis_coloured_blocks.gltf')." << std::endl;
@@ -51,39 +51,39 @@ namespace eye3d
         can_exit          // Can exit the program
     };
     // Parse cmd line to find the path and set options
-    std::string parse_inputs (int argc, char* argv[], sm::flags<eye3d::options>& opts)
+    std::string parse_inputs (int argc, char* argv[], sm::flags<demo::options>& opts)
     {
         std::string path = "";
         for (int i=0; i<argc; i++) {
             std::string arg = std::string(argv[i]);
             if (arg == "-h") {
-                eye3d::printHelp();
-                opts |= eye3d::options::can_exit;
+                demo::printHelp();
+                opts |= demo::options::can_exit;
             } else if (arg == "-f") {
                 i++;
                 path = std::string(argv[i]);
             } else if (arg == "-b") {
-                opts |= eye3d::options::blender_axes;
+                opts |= demo::options::blender_axes;
             } else if (arg == "-x") {
-                opts |= eye3d::options::max_fps;
+                opts |= demo::options::max_fps;
             }
         }
         if (path.empty()) {
-            eye3d::printHelp();
-            opts |= eye3d::options::can_exit;
+            demo::printHelp();
+            opts |= demo::options::can_exit;
         }
         return path;
     }
-} // namespace eye3d
+} // namespace demo
 
 int main (int argc, char* argv[])
 {
     using mc = sm::mathconst<float>;
 
     // Program options and boolean state
-    sm::flags<eye3d::options> opts;
-    std::string path = eye3d::parse_inputs (argc, argv, opts);
-    if (opts.test (eye3d::options::can_exit)) { return 1; }
+    sm::flags<demo::options> opts;
+    std::string path = demo::parse_inputs (argc, argv, opts);
+    if (opts.test (demo::options::can_exit)) { return 1; }
 
     // Boilerplate memory alloc for compound-ray
     multicamAlloc();
@@ -96,11 +96,11 @@ int main (int argc, char* argv[])
     setVerbosity (false);
     // Load the file
     std::cout << "Loading glTF file \"" << path << "\"..." << std::endl;
-    loadGlTFscene (path.c_str(), (opts.test(eye3d::options::blender_axes)
+    loadGlTFscene (path.c_str(), (opts.test(demo::options::blender_axes)
                                   ? mplot::compoundray::blender_transform() : sutil::Matrix4x4::identity()));
 
     // Create a mathplot window to render the eye/sensor
-    eye3dvisual v (2000, 1200, "Eye 3D (mathplot graphics)", opts.test(eye3d::options::blender_axes));
+    demo::eye3dvisual v (2000, 1200, "Eye 3D (mathplot graphics)", opts.test(demo::options::blender_axes));
     v.showCoordArrows (true);
     // Choose how fast the camera should move for key press and mouse events
     v.speed = 0.05f;
@@ -156,7 +156,7 @@ int main (int argc, char* argv[])
     mplot::compoundray::EyeVisual<>* eyevm_ptr = v.addVisualModel (eyevm);
 
     // Make CoordArrows axes to show our camera's localspace
-    mplot::CoordArrows<>* cam_cs_ptr = eye3d::plot_axes (&v);
+    mplot::CoordArrows<>* cam_cs_ptr = demo::plot_axes (&v);
     cam_cs_ptr->setViewMatrix (initial_camera_space);
 
     // We keep a track of the eye size. Used in subr_detect_camera_changes
@@ -177,8 +177,8 @@ int main (int argc, char* argv[])
         } // else no need to re-get data
 
         // Change showing the 'cones' of the compound eye visual model?
-        if (eyevm_ptr->show_cones != v.vstate.test(eye3dvisual::state::show_cones)) {
-            eyevm_ptr->show_cones = v.vstate.test(eye3dvisual::state::show_cones);
+        if (eyevm_ptr->show_cones != v.vstate.test(demo::eye3dvisual::state::show_cones)) {
+            eyevm_ptr->show_cones = v.vstate.test(demo::eye3dvisual::state::show_cones);
             eyevm_ptr->reinit();
         }
         // Change the length of the cones?
@@ -204,28 +204,28 @@ int main (int argc, char* argv[])
      */
     auto subr_key_move_camera = [&v, &eyevm_ptr, &cam_cs_ptr, &initial_camera_space, opts]()
     {
-        cam_cs_ptr->setHide (!v.vstate.test(eye3dvisual::state::show_camframe));
+        cam_cs_ptr->setHide (!v.vstate.test(demo::eye3dvisual::state::show_camframe));
 
         if (v.isActivelyMoving()) {
-            sm::vec<float, 3> t = v.getMovementVector (opts.test(eye3d::options::keep_moving));
+            sm::vec<float, 3> t = v.getMovementVector (opts.test(demo::options::keep_moving));
             translateCamerasLocally (t.x(), t.y(), t.z());
             // Up-down (pitch) is rotation about local camera frame axis x
-            rotateCamerasLocallyAround (v.getVerticalRotationAngle (opts.test(eye3d::options::keep_moving)), 1.0f, 0.0f, 0.0f);
+            rotateCamerasLocallyAround (v.getVerticalRotationAngle (opts.test(demo::options::keep_moving)), 1.0f, 0.0f, 0.0f);
             // Left-and-right (yaw) is rotation about local camera frame axis y
-            rotateCamerasLocallyAround (v.getHorizontalRotationAngle (opts.test(eye3d::options::keep_moving)), 0.0f, 1.0f, 0.0f);
+            rotateCamerasLocallyAround (v.getHorizontalRotationAngle (opts.test(demo::options::keep_moving)), 0.0f, 1.0f, 0.0f);
             // Roll
-            rotateCamerasLocallyAround (v.getRollRotationAngle (opts.test(eye3d::options::keep_moving)), 0.0f, 0.0f, 1.0f);
+            rotateCamerasLocallyAround (v.getRollRotationAngle (opts.test(demo::options::keep_moving)), 0.0f, 0.0f, 1.0f);
         }
 
         // Get the camera space and update our eye and camera-frame models
         sm::mat44<float> camera_space = mplot::compoundray::getCameraSpace (scene);
 
         // reset to initial camera space if requested
-        if (v.vstate.test (eye3dvisual::state::campose_reset_request) == true) {
+        if (v.vstate.test (demo::eye3dvisual::state::campose_reset_request) == true) {
             setCameraPoseMatrix (mplot::compoundray::mat44_to_Matrix4x4 (initial_camera_space));
             v.stop(); // cancel any active movements
             camera_space = initial_camera_space;
-            v.vstate.reset (eye3dvisual::state::campose_reset_request);
+            v.vstate.reset (demo::eye3dvisual::state::campose_reset_request);
         }
 
         // Update the view matrix of eye and eye localspace axes
@@ -247,7 +247,7 @@ int main (int argc, char* argv[])
         // Now render the mathplot window
         v.render();
         // Save some electricity while developing - limit to 60 FPS. For max speed use v.poll() (-x)
-        if (opts.test (eye3d::options::max_fps)) { v.poll(); } else { v.waitevents (0.018); }
+        if (opts.test (demo::options::max_fps)) { v.poll(); } else { v.waitevents (0.018); }
         // Deal with any movements commanded by key press events (including reset)
         subr_key_move_camera();
         // Do the compound-ray ray casting to recompute the scene
