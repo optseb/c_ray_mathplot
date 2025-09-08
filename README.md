@@ -18,11 +18,11 @@ compile and `make install` compound-ray from Seb's fork:
 
 https://github.com/optseb/compound-ray
 
-To compile eye3d, first clone sebsjames/mathplot, sebsjames/maths into
+To compile c_ray_mathplot, first clone sebsjames/mathplot, sebsjames/maths into
 the base of this repo:
 
 ```bash
-cd c_ray_eye3d
+cd c_ray_mathplot
 git clone git@github.com:sebsjames/maths
 git clone git@github.com:sebsjames/mathplot
 ```
