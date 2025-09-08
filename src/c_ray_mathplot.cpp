@@ -47,7 +47,7 @@ namespace demo
     {
         blender_axes,     // Set true to transform glTF into Blender's z-up axes
         keep_moving,      // If true, movements keep moving
-        max_fps,          // If true, poll, instead of fps
+        max_fps,          // If true, poll, instead of wait to increase fps
         can_exit          // Can exit the program
     };
     // Parse cmd line to find the path and set options
@@ -99,7 +99,7 @@ int main (int argc, char* argv[])
     loadGlTFscene (path.c_str(), (opts.test(demo::options::blender_axes)
                                   ? mplot::compoundray::blender_transform() : sutil::Matrix4x4::identity()));
 
-    // Create a mathplot window to render the eye/sensor
+    // Create a mathplot window (eye3dvisual derives from mplot::Visual) to render the eye/sensor
     demo::eye3dvisual v (2000, 1200, "Eye 3D (mathplot graphics)", opts.test(demo::options::blender_axes));
     v.showCoordArrows (true);
     // Choose how fast the camera should move for key press and mouse events
@@ -107,12 +107,13 @@ int main (int argc, char* argv[])
     v.angularSpeed = 2.0f * mc::two_pi / 360.0f;
     v.scenetrans_stepsize = 0.1f;
 
+    // Some experimental options
     v.showUserFrame (false);
     v.options.set (mplot::visual_options::rotateAboutSceneOrigin, false);
     v.options.set (mplot::visual_options::highlightCentralVM, true);
     v.options.set (mplot::visual_options::boundingBoxesToJson, true);
 
-    // Use a FPS profiling with a text object on screen
+    // Use a FPS profiler with a text object on screen
     demo::fps::profiler fps_profiler;
     mplot::VisualTextModel<>* fps_label;
     v.addLabel ("0 FPS", {0.63f, -0.43f, 0.0f}, fps_label);
@@ -163,9 +164,8 @@ int main (int argc, char* argv[])
     size_t last_eye_size = 0u;
 
     /**
-     * Subroutine lambda: Detect changes in the camera (there can be multiple cameras, some
-     * compound ray, some non-compound ray). The complexity here results from this complexity in
-     * compound-ray
+     * Subroutine lambda: Detect changes in the camera (in compound-ray there can be multiple
+     * cameras, some compound, some non-compound).
      */
     auto subr_detect_camera_changes = [&v, &ommatidia, &ommatidiaData, &ommatidiaPositions,
                                        &last_eye_size, &eyevm_ptr, opts] ()
@@ -176,7 +176,7 @@ int main (int argc, char* argv[])
             if (isCompoundEyeActive()) { getCameraData (ommatidiaData); }
         } // else no need to re-get data
 
-        // Change showing the 'cones' of the compound eye visual model?
+        // Change the eye visual model to show the 'cones' of the compound eye visual model?
         if (eyevm_ptr->show_cones != v.vstate.test(demo::eye3dvisual::state::show_cones)) {
             eyevm_ptr->show_cones = v.vstate.test(demo::eye3dvisual::state::show_cones);
             eyevm_ptr->reinit();

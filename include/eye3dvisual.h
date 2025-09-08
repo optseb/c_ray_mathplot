@@ -9,10 +9,10 @@
 
 namespace demo
 {
-/*
- * This is an extension of mplot::Visual which adds key-bindings for movement in the
- * demo program.
- */
+    /*
+     * This is an extension of mplot::Visual which adds key-bindings for movement in the demo
+     * program.
+     */
     struct eye3dvisual final : public mplot::Visual<>
     {
         using mc = sm::mathconst<float>;
