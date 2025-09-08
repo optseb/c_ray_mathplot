@@ -369,6 +369,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMPLOT_FONTS_DIR=\"\\\"${PROJECT_SOURCE
 
 # Find the libraries which will be needed in addition to those required by compound-ray
 find_package(Freetype REQUIRED)
+find_package(HDF5 REQUIRED)
 
 # Define collections of includes that have to be made for mathplot
 set(MPLOT_INC_GL ${OPENGL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})

@@ -17,8 +17,8 @@
 #include <mplot/compoundray/EyeVisual.h>
 #include <mplot/CoordArrows.h>
 
-// The compound-ray scene exists at global scope in libEyeRenderer.so
-extern MulticamScene* cr_scene;
+// The compound-ray scene exists at global scope in libEyeRenderer.so. It has to be named 'scene'
+extern MulticamScene* scene;
 
 // When the program starts, how many samples per ommatidium/element do you want?
 constexpr int samples_per_omm_default = 64;
@@ -142,12 +142,12 @@ int main (int argc, char* argv[])
     }
 
     // We get the initial camera localspace. This also serves to reset the camera pose. This is set in the GLTF file.
-    sm::mat44<float> initial_camera_space = mplot::compoundray::getCameraSpace (cr_scene);
+    sm::mat44<float> initial_camera_space = mplot::compoundray::getCameraSpace (scene);
 
     // Plot the visual models
-    mplot::compoundray::scene_to_visualmodels (cr_scene, &v);
+    mplot::compoundray::scene_to_visualmodels (scene, &v);
 
-    // Create an EyeVisual 'eye' in our mathplot cr_scene, v.
+    // Create an EyeVisual 'eye' in our mathplot scene, v.
     sm::vec<float, 3> offset = {};
     auto eyevm = std::make_unique<mplot::compoundray::EyeVisual<>> (offset, &ommatidiaData, ommatidia);
     v.bindmodel (eyevm);
@@ -218,7 +218,7 @@ int main (int argc, char* argv[])
         }
 
         // Get the camera space and update our eye and camera-frame models
-        sm::mat44<float> camera_space = mplot::compoundray::getCameraSpace (cr_scene);
+        sm::mat44<float> camera_space = mplot::compoundray::getCameraSpace (scene);
 
         // reset to initial camera space if requested
         if (v.vstate.test (eye3dvisual::state::campose_reset_request) == true) {
@@ -255,7 +255,7 @@ int main (int argc, char* argv[])
         // Access data so that a brain model could be fed
         if (isCompoundEyeActive()) {
             getCameraData (ommatidiaData);
-            ommatidia = &cr_scene->m_ommVecs[cr_scene->getCameraIndex()];
+            ommatidia = &scene->m_ommVecs[scene->getCameraIndex()];
         }
         // Mark that we got to the end of the loop
         fps_profiler.at_end();
