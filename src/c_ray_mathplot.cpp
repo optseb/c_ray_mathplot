@@ -106,12 +106,8 @@ int main (int argc, char* argv[])
     v.speed = 0.05f;
     v.angularSpeed = 2.0f * mc::two_pi / 360.0f;
     v.scenetrans_stepsize = 0.1f;
-
-    // Some experimental options
-    v.showUserFrame (false);
-    v.options.set (mplot::visual_options::rotateAboutSceneOrigin, false);
-    v.options.set (mplot::visual_options::highlightCentralVM, true);
-    v.options.set (mplot::visual_options::boundingBoxesToJson, true);
+    // In most full 3D scenes, it's useful to rotate the scene about the nearest VisualModel
+    v.rotateAboutNearest (true);
 
     // Use a FPS profiler with a text object on screen
     demo::fps::profiler fps_profiler;
