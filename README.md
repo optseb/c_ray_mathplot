@@ -18,6 +18,8 @@ compile and `make install` compound-ray from Seb's fork:
 
 https://github.com/optseb/compound-ray
 
+The compound-ray readme file has a section on [building compound-ray](https://github.com/optseb/compound-ray?tab=readme-ov-file#building).
+
 To compile c_ray_mathplot, first clone sebsjames/mathplot, sebsjames/maths into
 the base of this repo:
 
