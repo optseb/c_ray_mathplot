@@ -41,6 +41,8 @@ Now you can run the program
 
 ```bash
 ./build/bin/c_ray_mathplot -f ./data/axis_coloured_blocks.gltf
+# or
+./build/bin/c_ray_mathplot -f ./data/natural_env.gltf
 ```
 
 This will show the 'hexy' eye looking at a scene containing 6 coloured blocks.
