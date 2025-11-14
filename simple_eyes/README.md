@@ -12,14 +12,19 @@ In the eye file, the columns in a row contain these elements:
 
 Where:
 
-* x:   x coordinate of ommatidium in mm
-* y:   y coordinate of ommatidium in mm
-* z:   z coordinate of ommatidium in mm
+* x:   x coordinate of ommatidium in scene units
+* y:   y coordinate of ommatidium in scene units
+* z:   z coordinate of ommatidium in scene units
 * nx:  x coordinate of ommatidium's normal vector (its direction)
 * ny:  y coordinate of ommatidium's normal vector
 * nz:  z coordinate of ommatidium's normal vector
 * aa:  The acceptance angle in radians
-* fo:  Focal point offset in mm
+* fo:  Focal point offset in scene units
+
+The values of x, y and z for each ommatidium are interpreted as being
+the same as the units that specify the scene model. So if '1' means 1
+metre in your scene model, and you want an eye with a radius of 1 cm,
+then the values in x, y and z are likely to be of the order of 0.01.
 
 The eye file is used within a compound-ray gltf file. in the gltf, a
 camera is created which has a link to the eye file.
