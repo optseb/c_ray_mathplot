@@ -18,6 +18,8 @@ compile and `make install` compound-ray from Seb's fork:
 
 https://github.com/optseb/compound-ray
 
+The compound-ray readme file has a section on [building compound-ray](https://github.com/optseb/compound-ray?tab=readme-ov-file#building).
+
 To compile c_ray_mathplot, first clone sebsjames/mathplot, sebsjames/maths into
 the base of this repo:
 
@@ -40,10 +42,13 @@ make
 Now you can run the program
 
 ```bash
+# This will show the 'hexy' eye looking at a scene containing 6 coloured blocks.
 ./build/bin/c_ray_mathplot -f ./data/axis_coloured_blocks.gltf
+
+# This example is a scene containing tree and shrub models
+./build/bin/c_ray_mathplot -f ./data/natural_env.gltf
 ```
 
-This will show the 'hexy' eye looking at a scene containing 6 coloured blocks.
 
 Author: Seb James
 Date: September 2025

@@ -101,13 +101,27 @@ int main (int argc, char* argv[])
 
     // Create a mathplot window (eye3dvisual derives from mplot::Visual) to render the eye/sensor
     demo::eye3dvisual v (2000, 1200, "Eye 3D (mathplot graphics)", opts.test(demo::options::blender_axes));
+
+    // Options for mplot::Visual:
+    //
+    // See the coordinate arrows on screen by default (ctrl-c to change)
     v.showCoordArrows (true);
+    // Use a non-default zFar as we may want to use large environments
+    v.zFar = 2400;
+    // In most full 3D scenes, it's useful to rotate the scene about the nearest VisualModel
+    v.rotateAboutNearest (true);
+    // Rotate about a scene vertical axis
+    v.rotateAboutVertical (true);
+    // If using blender z-up, also change the vertical axis we mouse-rotate about
+    if (opts.test(demo::options::blender_axes)) {
+        v.switch_scene_vertical_axis(); // to uz up
+    }
+
+    // Options that demo::eye3dvisual adds when extending mplot::Visual:
+    //
     // Choose how fast the camera should move for key press and mouse events
     v.speed = 0.05f;
     v.angularSpeed = 2.0f * mc::two_pi / 360.0f;
-    v.scenetrans_stepsize = 0.1f;
-    // In most full 3D scenes, it's useful to rotate the scene about the nearest VisualModel
-    v.rotateAboutNearest (true);
 
     // Use a FPS profiler with a text object on screen
     demo::fps::profiler fps_profiler;
